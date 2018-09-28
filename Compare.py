@@ -3,6 +3,7 @@ import os
 from operator import itemgetter
 from itertools import groupby
 
+
 os.chdir('D:\\GitHub\\compareExTables')
 # ИМЯ ФАЙЛА
 filename = 'comparison  09 2018'
@@ -10,7 +11,7 @@ filename = 'comparison  09 2018'
 wb = openpyxl.load_workbook(filename + '.xlsx')
 
 # ЛИСТЫ
-overSheet = wb.get_sheet_by_name('overall list of details')
+overSheet = wb.get_sheet_by_name('overall list of details2')
 lisapSheet = wb.get_sheet_by_name('LISAP')
 resultSheet = wb.create_sheet('Result')
 addToOverall = wb.create_sheet('Add To Overall')
@@ -22,19 +23,37 @@ lisapRange = range(2, 70081)
 
 # сбор данных для сравнения
 # колонка О в overall, колонки С и I в LISAP
-overID = [overSheet.cell(row = i, column = 15).value for i in overRange]
-lisID_NUM = [[lisapSheet.cell(row = i, column = 3).value, lisapSheet.cell(row = i, column = 9).value] for i in lisapRange if lisapSheet.cell(row = i, column = 3).value != "" and lisapSheet.cell(row = i, column = 9).value != ""]
+overID_Count = [[overSheet.cell(row = i, column = 10).value, overSheet.cell(row = i, column = 15).value] for i in overRange]
+_overCount = [i[0] for i in overID_Count]
+overCount = []
+for i in _overCount:
+	if i == None or str(i).strip() == "":
+		overCount.append(0)
+	else:
+		overCount.append(i)
+
+overID = [i[1] for i in overID_Count]
+
+lisID_NUM = [[lisapSheet.cell(row = i, column = 3).value, lisapSheet.cell(row = i, column = 9).value] \
+				for i in lisapRange \
+				if str(lisapSheet.cell(row = i, column = 3).value).strip() != '' \
+				and str(lisapSheet.cell(row = i, column = 9).value).strip() != '']
 
 lis_ID = [i[0] for i in lisID_NUM]
 lis_NUM = [i[1] for i in lisID_NUM]
 
 lisID_in = []
-for i in overID:
+for i, n in zip(overID, overCount):
+	n = int(n)
 	if i in lis_ID:
-		ind = lis_ID.index(i)
-		lisID_in.append(lis_NUM[ind])
-		lis_ID.pop(ind)
-		lis_NUM.pop(ind)
+		numbers = ''
+		while n > 0 and i in lis_ID:
+			ind = lis_ID.index(i)
+			numbers += lis_NUM[ind] + ', '
+			lis_ID.pop(ind)
+			lis_NUM.pop(ind)
+			n -= 1
+		lisID_in.append(numbers)
 	else:
 		lisID_in.append('')
 
