@@ -31,6 +31,5 @@ for i in range(1, len(notInResID)+1):
 
 wb.save(filename + '_2.xlsx')	
 
-print(notInResID)
 print("OK")
 
