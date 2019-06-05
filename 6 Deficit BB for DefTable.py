@@ -21,24 +21,28 @@ defRange = range(3, 11418)
 
 # сбор данных для сравнения
 # колонка О в overall, колонки С и I в LISAP
-resID_Count = [[resultSheet.cell(row = i, column = 1).value, resultSheet.cell(row = i, column = 2).value] for i in resRange]
+resID_Count = [[resultSheet.cell(row = i, column = 1).value,\
+	resultSheet.cell(row = i, column = 2).value,\
+	resultSheet.cell(row = i, column = 3).value,\
+	resultSheet.cell(row = i, column = 6).value] for i in resRange]
 
-defID = [defSheet.cell(row = i, column = 15).value for i in defRange if defSheet.cell(row = i, column = 15).value not in noneList]
+defID = [defSheet.cell(row = i, column = 15).value for i in defRange]
 
 out = []
 for i in defID:
 	a = list(filter(lambda x: x[0] == i, resID_Count))
 	if a:
-		out.append([i,'deficit BB', a[0][1]])
+		out.append(a[0])
 	else:
-		out.append([None, None, None])
+		out.append([None, None, None, None])
 
 
-r = 1
+r = 3
 for i in out:
 	defResult.cell(row = r, column = 1).value = i[0]
 	defResult.cell(row = r, column = 2).value = i[1]
 	defResult.cell(row = r, column = 3).value = i[2]
+	defResult.cell(row = r, column = 4).value = i[3]
 	r += 1
 
 wb2.save('deficit BB_6.xlsx')
